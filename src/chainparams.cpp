@@ -181,6 +181,16 @@ public:
         // release ASAP to avoid it where possible.
         //vSeeds.emplace_back("list.velesdnsseed.veles.network"); // VELES founder seeds
         //vSeeds.emplace_back("velesdnsseed.midnightminer.net"); // VELES MidnightMiner seeds
+        vSeeds.emplace_back("seed.veles.network");
+        vSeeds.emplace_back("seed1.veles.network");
+        vSeeds.emplace_back("seed2.veles.network");
+        vSeeds.emplace_back("seed3.veles.network");
+        vSeeds.emplace_back("seed4.veles.network");
+        vSeeds.emplace_back("seed5.veles.network");
+        vSeeds.emplace_back("seed6.veles.network");
+        vSeeds.emplace_back("seed7.veles.network");
+        vSeeds.emplace_back("seed8.veles.network");
+        vSeeds.emplace_back("seed9.veles.network");
         //vSeeds.emplace_back("seeds.on.another.domain"); // dns seeds template
 
         // VELES prefix 'B'
