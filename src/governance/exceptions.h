@@ -11,6 +11,12 @@
 #include <sstream>
 #include <string>
 
+// VELES BEGIN
+#ifndef GetMessageA
+#define GetMessageA GetMessage
+#endif
+// VELES END
+
 enum governance_exception_type_enum_t {
     /// Default value, normally indicates no exception condition occurred
     GOVERNANCE_EXCEPTION_NONE = 0,
