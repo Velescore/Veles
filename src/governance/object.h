@@ -9,9 +9,9 @@
 //#define ENABLE_DASH_DEBUG
 
 #include <cachemultimap.h>
-#include <governance-exceptions.h>
-#include <governance-vote.h>
-#include <governance-votedb.h>
+#include <governance/exceptions.h>
+#include <governance/vote.h>
+#include <governance/votedb.h>
 #include <key.h>
 #include <net.h>
 #include <sync.h>
@@ -355,4 +355,4 @@ private:
 };
 
 
-#endif // DASH_GOVERNANCE_OBJECT_H
+#endif //DASH_GOVERNANCE_OBJECT_H

@@ -3,8 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef DASH_ACTIVEMASTERNODE_H
-#define DASH_ACTIVEMASTERNODE_H
+#ifndef DASH_MASTERNODE_ACTIVEMASTERNODE_H
+#define DASH_MASTERNODE_ACTIVEMASTERNODE_H
 
 #include <chainparams.h>
 #include <key.h>
@@ -82,4 +82,4 @@ private:
     void ManageStateRemote();
 };
 
-#endif // DASH_ACTIVEMASTERNODE_H
+#endif //DASH_MASTERNODE_ACTIVEMASTERNODE_H

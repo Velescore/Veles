@@ -6,7 +6,7 @@
 #ifndef DASH_PRIVATESEND_CLIENT_H
 #define DASH_PRIVATESEND_CLIENT_H
 
-#include <masternode.h>
+#include <masternode/masternode.h>
 #include <privatesend.h>
 #include <wallet/wallet.h>
 #include <privatesend-util.h>

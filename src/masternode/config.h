@@ -3,8 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef DASH_MASTERNODECONFIG_H
-#define DASH_MASTERNODECONFIG_H
+#ifndef DASH_MASTERNODE_CONFIG_H
+#define DASH_MASTERNODE_CONFIG_H
 
 class CMasternodeConfig;
 extern CMasternodeConfig masternodeConfig;
@@ -95,4 +95,4 @@ private:
 
 };
 
-#endif // DASH_MASTERNODECONFIG_H
+#endif //DASH_MASTERNODE_CONFIG_H

@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 // VELES BEGIN
-#include <masternodeconfig.h>
+#include <masternode/config.h>
 #include <veleslogo.h>
 // VELES END
 

@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
-#include <masternodeconfig.h>
+#include <masternode/config.h>
 #include <util/system.h>
 #include <util/strencodings.h>
 

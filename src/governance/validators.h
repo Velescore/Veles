@@ -61,4 +61,4 @@ private:
 
 };
 
-#endif // DASH_GOVERNANCE_VALIDATORS_H
+#endif //DASH_GOVERNANCE_VALIDATORS_H

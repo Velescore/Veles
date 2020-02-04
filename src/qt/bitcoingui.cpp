@@ -39,7 +39,7 @@
 #include <util/system.h>
 
 // Dash
-#include <masternode-sync.h>
+#include <masternode/sync.h>
 #include <qt/masternodelist.h>
 //
 

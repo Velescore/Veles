@@ -2,16 +2,16 @@
 // Copyright (c) 2018-2019 FXTC developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#include <privatesend.h>
 
-#include <activemasternode.h>
+#include <privatesend.h>
 #include <consensus/validation.h>
-#include <governance.h>
+#include <governance/governance.h>
 #include <init.h>
 #include <instantx.h>
-#include <masternode-payments.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/activemasternode.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <netmessagemaker.h>
 #include <reverse_iterator.h>

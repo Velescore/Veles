@@ -2,14 +2,14 @@
 // Copyright (c) 2018-2019 FXTC developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#include <privatesend-server.h>
 
-#include <activemasternode.h>
+#include <privatesend-server.h>
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <init.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/activemasternode.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <netmessagemaker.h>
 #include <script/interpreter.h>
 // FXTC BEGIN

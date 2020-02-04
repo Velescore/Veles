@@ -4,13 +4,13 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <core_io.h>
-#include <governance.h>
-#include <governance-classes.h>
-#include <governance-object.h>
-#include <governance-vote.h>
+#include <governance/governance.h>
+#include <governance/classes.h>
+#include <governance/object.h>
+#include <governance/vote.h>
 #include <instantx.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <util/system.h>
 

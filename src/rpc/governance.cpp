@@ -6,19 +6,19 @@
 
 //#define ENABLE_DASH_DEBUG
 
-#include <activemasternode.h>
 #include <consensus/validation.h>
 #include <core_io.h>
-#include <governance.h>
-#include <governance-vote.h>
-#include <governance-classes.h>
-#include <governance-validators.h>
+#include <governance/governance.h>
+#include <governance/vote.h>
+#include <governance/classes.h>
+#include <governance/validators.h>
 #include <init.h>
 #include <validation.h>
-#include <masternode.h>
-#include <masternode-sync.h>
-#include <masternodeconfig.h>
-#include <masternodeman.h>
+#include <masternode/activemasternode.h>
+#include <masternode/masternode.h>
+#include <masternode/sync.h>
+#include <masternode/config.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <primitives/block.h>
 // FXTC BEGIN

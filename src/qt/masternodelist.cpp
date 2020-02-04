@@ -6,14 +6,14 @@
 #include <qt/masternodelist.h>
 #include <qt/forms/ui_masternodelist.h>
 
-#include <activemasternode.h>
 #include <qt/clientmodel.h>
 #include <qt/guiutil.h>
 #include <init.h>
 #include <key_io.h>
-#include <masternode-sync.h>
-#include <masternodeconfig.h>
-#include <masternodeman.h>
+#include <masternode/activemasternode.h>
+#include <masternode/sync.h>
+#include <masternode/config.h>
+#include <masternode/manager.h>
 #include <sync.h>
 #include <wallet/wallet.h>
 #include <qt/walletmodel.h>

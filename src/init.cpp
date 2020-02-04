@@ -57,18 +57,18 @@
 #include <stdio.h>
 
 // Dash
-#include <activemasternode.h>
 #include <dsnotificationinterface.h>
 #include <flat-database.h>
-#include <governance.h>
+#include <governance/governance.h>
 #include <instantx.h>
 #ifdef ENABLE_WALLET
 #include <keepass.h>
 #endif
-#include <masternode-payments.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
-#include <masternodeconfig.h>
+#include <masternode/activemasternode.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
+#include <masternode/config.h>
 #include <messagesigner.h>
 #include <netfulfilledman.h>
 #ifdef ENABLE_WALLET

@@ -8,8 +8,8 @@
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <init.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <netmessagemaker.h>
 #include <reverse_iterator.h>
 #include <script/sign.h>

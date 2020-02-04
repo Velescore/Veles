@@ -8,7 +8,7 @@
 
 //#define ENABLE_DASH_DEBUG
 
-#include <governance.h>
+#include <governance/governance.h>
 #include <key.h>
 #include <key_io.h>
 #include <script/standard.h>
@@ -207,4 +207,4 @@ public:
     bool IsValid(const CTransactionRef txNew, int nBlockHeight, CAmount blockReward, CBlockHeader pblock);
 };
 
-#endif // DASH_GOVERNANCE_CLASSES_H
+#endif //DASH_GOVERNANCE_CLASSES_H

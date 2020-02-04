@@ -32,9 +32,9 @@
 #include <warnings.h>
 
 // Dash
-#include <governance-classes.h>
-#include <masternode-payments.h>
-#include <masternode-sync.h>
+#include <governance/classes.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
 //
 
 #include <memory>

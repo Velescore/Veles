@@ -3,14 +3,14 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <activemasternode.h>
 #include <init.h>
 #include <key_io.h>
 #include <netbase.h>
-#include <masternode.h>
-#include <masternode-payments.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/activemasternode.h>
+#include <masternode/masternode.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <script/standard.h>
 // FXTC BEGIN

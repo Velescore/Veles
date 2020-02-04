@@ -33,7 +33,7 @@
 #include <util/moneystr.h>
 #include <wallet/fees.h>
 
-#include <governance.h>
+#include <governance/governance.h>
 #include <instantx.h>
 #include <keepass.h>
 #include <privatesend-client.h>

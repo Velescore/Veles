@@ -221,4 +221,4 @@ public:
 
 */
 
-#endif // DASH_GOVERNANCE_VOTE_H
+#endif //DASH_GOVERNANCE_VOTE_H

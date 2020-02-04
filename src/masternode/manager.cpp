@@ -3,12 +3,12 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <activemasternode.h>
 #include <addrman.h>
-#include <governance.h>
-#include <masternode-payments.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <governance/governance.h>
+#include <masternode/activemasternode.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <netfulfilledman.h>
 #include <netmessagemaker.h>
@@ -24,7 +24,7 @@ extern void Misbehaving(NodeId nodeid, int howmuch, const std::string& message="
 // FXTC END
 // VELES BEGIN
 #if defined(ENABLE_WALLET) && defined(ENABLE_MN_HELPER)
-#include <masternodeconfig.h>
+#include <masternode/config.h>
 #endif // defined(ENABLE_WALLET) && defined(ENABLE_MN_HELPER)
 // VELES END
 /** Masternode manager */

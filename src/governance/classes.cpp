@@ -6,7 +6,7 @@
 //#define ENABLE_DASH_DEBUG
 
 #include <core_io.h>
-#include <governance-classes.h>
+#include <governance/classes.h>
 #include <init.h>
 #include <validation.h>
 #include <util/strencodings.h>

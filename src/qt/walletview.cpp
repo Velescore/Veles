@@ -12,7 +12,7 @@
 #include <qt/clientmodel.h>
 #include <qt/guiutil.h>
 // Dash
-#include <masternodeconfig.h>
+#include <masternode/config.h>
 //
 #include <qt/optionsmodel.h>
 #include <qt/overviewpage.h>

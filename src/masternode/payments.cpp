@@ -3,11 +3,11 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <activemasternode.h>
-#include <governance-classes.h>
-#include <masternode-payments.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <governance/classes.h>
+#include <masternode/activemasternode.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <netfulfilledman.h>
 #include <netmessagemaker.h>

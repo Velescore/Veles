@@ -24,12 +24,12 @@ KNOWN_VIOLATIONS=(
     "src/rpc/masternode.cpp:.*atoi*"
     "src/wallet/wallet.cpp:.*atoi*"
     "src/spork.cpp:.*ctime*"
-    "src/governance-validators.cpp:.*tolower*"
+    "src/governance/validators.cpp:.*tolower*"
     "src/init.cpp:.*tolower*"
     #
 
     # Veles
-    "src/masternodeman.cpp:.*atoi*"
+    "src/masternode/manager.cpp:.*atoi*"
     #
 )
 

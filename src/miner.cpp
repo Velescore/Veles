@@ -29,8 +29,8 @@
 #include <validationinterface.h>
 
 // Dash
-#include <masternode-payments.h>
-#include <masternode-sync.h>
+#include <masternode/payments.h>
+#include <masternode/sync.h>
 //
 
 #include <algorithm>

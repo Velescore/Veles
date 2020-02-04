@@ -3,8 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef DASH_MASTERNODE_H
-#define DASH_MASTERNODE_H
+#ifndef DASH_MASTERNODE_MASTERNODE_H
+#define DASH_MASTERNODE_MASTERNODE_H
 
 #include <key.h>
 #include <validation.h>
@@ -414,4 +414,4 @@ public:
     }
 };
 
-#endif // DASH_MASTERNODE_H
+#endif //DASH_MASTERNODE_MASTERNODE_H

@@ -7,7 +7,7 @@
 #ifndef DASH_GOVERNANCE_MISC_H
 #define DASH_GOVERNANCE_MISC_H
 
-#include <governance.h>
+#include <governance/governance.h>
 
 using namespace std;
 
@@ -51,4 +51,4 @@ class CGovernanceVote;
 // 	}
 // };
 
-#endif // DASH_GOVERNANCE_MISC_H
+#endif //DASH_GOVERNANCE_MISC_H

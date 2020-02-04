@@ -9,7 +9,7 @@
 #include <list>
 #include <map>
 
-#include <governance-vote.h>
+#include <governance/vote.h>
 #include <serialize.h>
 #include <uint256.h>
 
@@ -91,4 +91,4 @@ private:
 
 };
 
-#endif // DASH_GOVERNANCE_VOTEDB_H
+#endif //DASH_GOVERNANCE_VOTEDB_H

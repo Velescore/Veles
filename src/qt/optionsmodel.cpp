@@ -23,7 +23,7 @@
 
 // Dash
 #ifdef ENABLE_WALLET
-#include <masternodeconfig.h>
+#include <masternode/config.h>
 #endif // ENABLE_WALLET
 //
 

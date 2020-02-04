@@ -234,26 +234,26 @@ BITCOIN_CORE_H = \
 
 # dash core #
 BITCOIN_CORE_H += \
-  activemasternode.h \
   cachemap.h \
   cachemultimap.h \
   dsnotificationinterface.h \
   flat-database.h \
-  governance.h \
-  governance-classes.h \
-  governance-exceptions.h \
-  governance-misc.h \
-  governance-object.h \
-  governance-validators.h \
-  governance-vote.h \
-  governance-votedb.h \
+  governance/governance.h \
+  governance/classes.h \
+  governance/exceptions.h \
+  governance/misc.h \
+  governance/object.h \
+  governance/validators.h \
+  governance/vote.h \
+  governance/votedb.h \
   instantx.h \
   keepass.h \
-  masternode.h \
-  masternodeman.h \
-  masternode-payments.h \
-  masternode-sync.h \
-  masternodeconfig.h \
+  masternode/activemasternode.h \
+  masternode/masternode.h \
+  masternode/manager.h \
+  masternode/payments.h \
+  masternode/sync.h \
+  masternode/config.h \
   messagesigner.h \
   netfulfilledman.h \
   privatesend.h \
@@ -325,20 +325,20 @@ libbitcoin_server_a_SOURCES = \
 
 # dash server
 libbitcoin_server_a_SOURCES += \
-  activemasternode.cpp \
   dsnotificationinterface.cpp \
-  governance.cpp \
-  governance-classes.cpp \
-  governance-object.cpp \
-  governance-validators.cpp \
-  governance-vote.cpp \
-  governance-votedb.cpp \
+  governance/governance.cpp \
+  governance/classes.cpp \
+  governance/object.cpp \
+  governance/validators.cpp \
+  governance/vote.cpp \
+  governance/votedb.cpp \
   instantx.cpp \
-  masternode.cpp \
-  masternodeman.cpp \
-  masternode-payments.cpp \
-  masternode-sync.cpp \
-  masternodeconfig.cpp \
+  masternode/activemasternode.cpp \
+  masternode/masternode.cpp \
+  masternode/manager.cpp \
+  masternode/payments.cpp \
+  masternode/sync.cpp \
+  masternode/config.cpp \
   messagesigner.cpp \
   netfulfilledman.cpp \
   privatesend.cpp \

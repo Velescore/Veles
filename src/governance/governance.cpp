@@ -3,14 +3,14 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <governance.h>
-#include <governance-object.h>
-#include <governance-vote.h>
-#include <governance-classes.h>
+#include <governance/governance.h>
+#include <governance/object.h>
+#include <governance/vote.h>
+#include <governance/classes.h>
 #include <net_processing.h>
-#include <masternode.h>
-#include <masternode-sync.h>
-#include <masternodeman.h>
+#include <masternode/masternode.h>
+#include <masternode/sync.h>
+#include <masternode/manager.h>
 #include <messagesigner.h>
 #include <netfulfilledman.h>
 #include <netmessagemaker.h>

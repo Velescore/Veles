@@ -82,4 +82,4 @@ public:
     void UpdatedBlockTip(const CBlockIndex *pindexNew, bool fInitialDownload, CConnman& connman);
 };
 
-#endif // DASH_MASTERNODE_SYNC_H
+#endif //DASH_MASTERNODE_SYNC_H

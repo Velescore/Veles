@@ -3,10 +3,10 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef DASH_MASTERNODEMAN_H
-#define DASH_MASTERNODEMAN_H
+#ifndef DASH_MASTERNODE_MANAGER_H
+#define DASH_MASTERNODE_MANAGER_H
 
-#include <masternode.h>
+#include <masternode/masternode.h>
 #include <sync.h>
 
 using namespace std;
@@ -242,4 +242,4 @@ public:
 
 };
 
-#endif // DASH_MASTERNODEMAN_H
+#endif //DASH_MASTERNODE_MANAGER_H
