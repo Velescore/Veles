@@ -1,8 +1,8 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2018 The Bitcoin Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
-// Copyright (c) 2018 FXTC developers
-// Copyright (c) 2018-2019 The Veles Core developers
+// Copyright (c) 2018-2019 FXTC developers
+// Copyright (c) 2018-2020 The Veles Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -45,7 +45,7 @@
  * or from the last difficulty change if 'lookup' is nonpositive.
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
-static UniValue GetNetworkHashPS(int lookup, int height, int32_t nAlgo) {
+static UniValue GetNetworkHashPS(int lookup, int height, int32_t nAlgo) {   // VELES: added int32_t nAlgo
     CBlockIndex *pb = chainActive.Tip();
 
     if (height >= 0 && height < chainActive.Height())
@@ -161,7 +161,7 @@ static const CBlockIndex *GetLastAlgoBlock(int32_t nAlgo) {
  * defined by nAlgo parameter.
  *
  */
-static double GetLastAlgoDifficulty(int32_t nAlgo) {
+static double GetAlgoDifficulty(int32_t nAlgo) {
    return (double)GetDifficulty(GetLastAlgoBlock(nAlgo));
 }
 
@@ -290,22 +290,26 @@ static UniValue generatetoaddress(const JSONRPCRequest& request)
 
 static UniValue getmininginfo(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() != 0) {
+    if (request.fHelp || request.params.size() > 1) {   // Veles: Added paremeter
         throw std::runtime_error(
             RPCHelpMan{"getmininginfo",
                 "\nReturns a json object containing mining-related information.",
-                {},
+                // VELES BEGIN
+                {
+                    {"algorithm", RPCArg::Type::STR, GetAlgoName(miningAlgo) /* default */, "*EXPERIMENTAL* A name of the PoW algorithm used"}
+                },
+                // VELES END,
                 RPCResult{
                     "{\n"
                     "  \"blocks\": nnn,             (numeric) The current block\n"
                     "  \"currentblockweight\": nnn, (numeric, optional) The block weight of the last assembled block (only present if a block was ever assembled)\n"
                     "  \"currentblocktx\": nnn,     (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
                     "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
-                    "  \"algo\": \"...\"              (string) The current mining algo\n"
+                    "  \"algorithm"": \"...\"       (string) The current mining algo\n" // Veles
                     "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
                     "  \"pooledtx\": n              (numeric) The size of the mempool\n"
-                    "  \"chain\": \"xxxx\",           (string) current network name as defined in BIP70 (main, test, regtest)\n"
-                    "  \"warnings\": \"...\"          (string) any network and blockchain warnings\n"
+                    "  \"chain\": \"xxxx\",         (string) current network name as defined in BIP70 (main, test, regtest)\n"
+                    "  \"warnings\": \"...\"        (string) any network and blockchain warnings\n"
                     "}\n"
                 },
                 RPCExamples{
@@ -317,13 +321,24 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
+    // VELES BEGIN
+    int32_t nPowAlgo = miningAlgo;
+    if (!request.params[0].isNull())
+        nPowAlgo = GetAlgoId(request.params[0].get_str());
+
+    if (nPowAlgo == ALGO_NULL)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Unknown algorithm %s", request.params[0].get_str()));
+    // VELES END
+
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("blocks",           (int)chainActive.Height());
     if (BlockAssembler::m_last_block_weight) obj.pushKV("currentblockweight", *BlockAssembler::m_last_block_weight);
     if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
-    obj.pushKV("difficulty",       (double)GetDifficulty(chainActive.Tip()));
-    obj.pushKV("algo",             GetAlgoName(miningAlgo));
-    obj.pushKV("networkhashps",    getnetworkhashps(request));
+    // Veles edit
+    obj.pushKV("difficulty",       (double)GetAlgoDifficulty(nPowAlgo));
+    obj.pushKV("algo",             GetAlgoName(nPowAlgo));
+    obj.pushKV("networkhashps",    GetNetworkHashPS(120, -1, nPowAlgo));
+    //
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));
@@ -486,7 +501,7 @@ static UniValue getmultialgostatus(const JSONRPCRequest& request)
             RPCResult{
             //"[\n"
             "  {\n"
-            "    \"algo\": xxxxxx                  (string)  PoW algorithm algorithm name.\n"
+            "    \"algorithm"": xxxxxx             (string)  PoW algorithm algorithm name.\n"
             "    \"difficulty\": xxx.xxxxx,        (numeric) The current difficulty\n"
             "    \"hashrate\": xxx.xxxxx,          (numeric) The network hashes per second\n"
             "    \"last_block_index\" : xx         (numeric) Number of the last block generated by the algorithm\n"
@@ -512,7 +527,7 @@ static UniValue getmultialgostatus(const JSONRPCRequest& request)
 
     for(int i = 0; i < (int)algos.size(); i++) {
         algoObj.pushKV("algo", GetAlgoName(algos[i]));
-        algoObj.pushKV("difficulty", (double)GetLastAlgoDifficulty(algos[i]));
+        algoObj.pushKV("difficulty", (double)GetAlgoDifficulty(algos[i]));
         algoObj.pushKV("hashrate",   GetNetworkHashPS(120, -1, algos[i]));
         algoObj.pushKV("last_block_index", (int)GetLastAlgoBlock(algos[i])->nHeight);
         // Yet undocumented extended info, experimental
@@ -599,7 +614,7 @@ static std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
 
 static UniValue getblocktemplate(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() > 1)
+    if (request.fHelp || request.params.size() > 2) // Veles: Added parameter
         throw std::runtime_error(
             RPCHelpMan{"getblocktemplate",
                 "\nIf the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.\n"
@@ -625,6 +640,9 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
                                 },
                         },
                         "\"template_request\""},
+                    // VELES BEGIN
+                    {"algorithm", RPCArg::Type::STR, GetAlgoName(miningAlgo) /* default */, "*EXPERIMENTAL* A name of the PoW algorithm used"}
+                    // VELES END
                 },
                 RPCResult{
             "{\n"
@@ -697,15 +715,15 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
             "}\n"
                 },
                 RPCExamples{
-                    HelpExampleCli("getblocktemplate", "{\"rules\": [\"segwit\"]}")
-            + HelpExampleRpc("getblocktemplate", "{\"rules\": [\"segwit\"]}")
+                    HelpExampleCli("getblocktemplate", "{\"rules\": [\"segwit\"]} x16r")    // Veles: Added parameter to the example
+            + HelpExampleRpc("getblocktemplate", "{\"rules\": [\"segwit\"]} x16r")
                 },
             }.ToString()
         // VELES BEGIN
             + ((gArgs.GetBoolArg("-rpcbackcompatible", DEFAULT_RPC_BACK_COMPATIBLE))
-                ? "\nNotice: RPC backward compatibility is enabled and this method will return a result even without the required argument, "
-                  "which was optional in the previous version. It will assume the default value of {\"rules\": [\"segwit\"]}. To enforce "
-                  "strict checking of syntax described above, use -rpcbackcompatible=0\n"
+                ? "\nNotice: RPC backward compatibility is enabled and this method will return a result even without the required argument"
+                  "template_request. It will assume the default value of {\"rules\": [\"segwit\"]}."
+                  "To enforce strict checking of syntax described above, use -rpcbackcompatible=0\n"
                 : "")
         // VELES END
         );
@@ -786,6 +804,15 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     if (IsInitialBlockDownload())
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Veles is downloading blocks...");
 
+    // VELES BEGIN
+    int32_t nPowAlgo = miningAlgo;
+    if (!request.params[1].isNull())
+        nPowAlgo = GetAlgoId(request.params[1].get_str());
+
+    if (nPowAlgo == ALGO_NULL)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Unknown algorithm %s", request.params[1].get_str()));
+    // VELES END
+
     // Dash
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
     CScript payee;
@@ -865,8 +892,10 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     static CBlockIndex* pindexPrev;
     static int64_t nStart;
     static std::unique_ptr<CBlockTemplate> pblocktemplate;
+    static int32_t nTemplatePowAlgo;    // Veles
     if (pindexPrev != chainActive.Tip() ||
-        (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 5))
+        (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 5) ||
+        nPowAlgo != nTemplatePowAlgo)   // Veles: Check whether the cached template has been generated for the same algo
     {
         // Clear pindexPrev so future calls make a new block, despite any failures from here on
         pindexPrev = nullptr;
@@ -875,10 +904,11 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
         nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
         CBlockIndex* pindexPrevNew = chainActive.Tip();
         nStart = GetTime();
+        nTemplatePowAlgo = nPowAlgo;    // Veles
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy);
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, nPowAlgo); // VELES: Use given algo
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
