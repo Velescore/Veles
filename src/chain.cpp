@@ -170,6 +170,7 @@ const CBlockIndex* LastCommonAncestor(const CBlockIndex* pa, const CBlockIndex* 
     return pa;
 }
 
+// Veles
 std::string GetAlgoName(int32_t nAlgo)
 {
     switch (nAlgo)
@@ -192,6 +193,7 @@ std::string GetAlgoName(int32_t nAlgo)
 
 int32_t GetAlgoId(std::string strAlgo)
 {
+    //transform(strAlgo.begin(), strAlgo.end(), strAlgo.begin(), ::tolower);
     if (strAlgo == "sha256d")         return ALGO_SHA256D;
     if (strAlgo == "scrypt")          return ALGO_SCRYPT;
     if (strAlgo == "nist5")           return ALGO_NIST5;
@@ -199,5 +201,6 @@ int32_t GetAlgoId(std::string strAlgo)
     if (strAlgo == "x11")             return ALGO_X11;
     if (strAlgo == "x16r")            return ALGO_X16R;
 
-    return miningAlgo;
+    return ALGO_NULL;
 }
+//

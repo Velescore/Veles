@@ -1262,27 +1262,13 @@ bool AppInitParameterInteraction()
         fEnableReplacement = (std::find(vstrReplacementModes.begin(), vstrReplacementModes.end(), "fee") != vstrReplacementModes.end());
     }
 
-    // FXTC BEGIN
-    // algo switch
-    // VELES BEGIN
-    std::string strAlgo = gArgs.GetArg("-algo", DEFAULT_MINING_ALGO);
-    // VELES END
-    transform(strAlgo.begin(), strAlgo.end(), strAlgo.begin(), ::tolower);
-    if (strAlgo == "sha256d")
-         miningAlgo = ALGO_SHA256D;
-    else if (strAlgo == "scrypt")
-         miningAlgo = ALGO_SCRYPT;
-    else if (strAlgo == "nist5")
-         miningAlgo = ALGO_NIST5;
-    else if (strAlgo == "lyra2z")
-         miningAlgo = ALGO_LYRA2Z;
-    else if (strAlgo == "x11")
-         miningAlgo = ALGO_X11;
-    else if (strAlgo == "x16r")
-         miningAlgo = ALGO_X16R;
-    else
-         miningAlgo = ALGO_SHA256D; // FXTC TODO: we should not be here
-    // FXTC END
+    // Veles
+    miningAlgo = GetAlgoId(gArgs.GetArg("-algo", DEFAULT_MINING_ALGO));
+    if (miningAlgo == ALGO_NULL)
+        return InitError("unknown PoW mining algo requested.");
+
+     LogPrintf("Setting current PoW algorithm to %s\n", GetAlgoName(miningAlgo));
+    //
 
     return true;
 }

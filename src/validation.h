@@ -556,7 +556,13 @@ bool GetBlockHash(uint256& hashRet, int nBlockHeight = -1);
 /**
  * Determine what nVersion a new block should use.
  */
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, int32_t nPowAlgo); // VELES: Add parameter nPowAlgo
+// VELES BEGIN
+/**
+ * Default behaviour is to return block version for the algo set in the configuration
+ */
 int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params);
+// VELES END
 
 /** Reject codes greater or equal to this can be returned by AcceptToMemPool
  * for transactions, to signal internal conditions. They cannot and should not

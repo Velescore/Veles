@@ -148,7 +148,7 @@ void BlockAssembler::resetBlock()
 Optional<int64_t> BlockAssembler::m_last_block_num_txs{nullopt};
 Optional<int64_t> BlockAssembler::m_last_block_weight{nullopt};
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, int32_t nPowAlgo) // Veles: Add parameter nPowAlgo
 {
     int64_t nTimeStart = GetTimeMicros();
 
@@ -170,7 +170,13 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     assert(pindexPrev != nullptr);
     nHeight = pindexPrev->nHeight + 1;
 
-    pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    // Veles
+    if (nPowAlgo == ALGO_NULL)
+        pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+    else
+        pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(), nPowAlgo);
+    //
+
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (chainparams.MineBlocksOnDemand())
@@ -260,6 +266,12 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     return std::move(pblocktemplate);
 }
+// Veles
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
+{
+    return BlockAssembler::CreateNewBlock(scriptPubKeyIn, ALGO_NULL);
+}
+//
 
 void BlockAssembler::onlyUnconfirmed(CTxMemPool::setEntries& testSet)
 {
