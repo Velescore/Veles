@@ -2164,7 +2164,7 @@ void ThreadScriptCheck() {
 
 VersionBitsCache versionbitscache GUARDED_BY(cs_main);
 
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params)
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, int32_t nPowAlgo) // VELES: Add parameter nPowAlgo
 {
     if (pindexPrev->nHeight+1 < sporkManager.GetSporkValue(SPORK_VELES_01_FXTC_CHAIN_START)) return 4;
 
@@ -2178,11 +2178,18 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         }
     }
 
-    // encode algo into nVersion
-    nVersion |= miningAlgo;
+    // VELES: Encode algo into nVersion
+    nVersion |= nPowAlgo;
 
     return nVersion;
 }
+
+// VELES BEGIN
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params)
+{
+  return ComputeBlockVersion(pindexPrev, params, miningAlgo);
+}
+// VELES END
 
 bool GetBlockHash(uint256& hashRet, int nBlockHeight)
 {

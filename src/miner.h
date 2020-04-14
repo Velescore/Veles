@@ -160,8 +160,11 @@ public:
     BlockAssembler(const CChainParams& params, const Options& options);
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, int32_t nPowAlgo); // VELES: Add parameter nPowAlgo
+    // VELES BEGIN
+    /** Default behaviour to return block for the algo set in the daemon configuration */
     std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn);
-
+    // VELES END
     static Optional<int64_t> m_last_block_num_txs;
     static Optional<int64_t> m_last_block_weight;
 
