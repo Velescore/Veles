@@ -347,11 +347,11 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
 }
 
 // VELES BEGIN
-static UniValue gethalvingstatus(const JSONRPCRequest& request)
+static UniValue gethalvinginfo(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size()) {
         throw std::runtime_error(
-            RPCHelpMan{"gethalvingstatus",
+            RPCHelpMan{"gethalvinginfo",
                 "\nReturns a json object containing an information related to block reward halving. A halving epoch is time between\n"
                 "the start and end of block subsidy halving interval, where maximum block reward is the same for all the blocks\n"
                 "within the epoch. If not enough coins are mined during the epoch, the halving will not occur and the current epoch\n"
@@ -386,8 +386,8 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
                     "}\n"
                 },
                 RPCExamples{
-                    HelpExampleCli("gethalvingstatus", "")
-                  + HelpExampleRpc("gethalvingstatus", "")
+                    HelpExampleCli("gethalvinginfo", "")
+                  + HelpExampleRpc("gethalvinginfo", "")
                 },
             }.ToString()
         );
@@ -475,11 +475,11 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
     return obj;
 }
 
-static UniValue getmultialgostatus(const JSONRPCRequest& request)
+static UniValue getmultialgoinfo(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size())
         throw std::runtime_error(
-            RPCHelpMan{"getmultialgostatus",
+            RPCHelpMan{"getmultialgoinfo",
             "\nReturns a json object containing information related to multi-algo mining.",
             {},
             RPCResult{
@@ -496,8 +496,8 @@ static UniValue getmultialgostatus(const JSONRPCRequest& request)
             //"  sha256d, scrypt, lyra2z, x11, x16, nist5.\n"
             },
             RPCExamples{
-                HelpExampleCli("getmultialgostatus", "")
-            + HelpExampleRpc("getmultialgostatus", "")
+                HelpExampleCli("getmultialgoinfo", "")
+              + HelpExampleRpc("getmultialgoinfo", "")
             },
         }.ToString());
 
@@ -1392,9 +1392,9 @@ static const CRPCCommand commands[] =
     { "mining",             "getnetworkhashps",       &getnetworkhashps,       {"nblocks","height"} },
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     // VELES BEGIN
-    { "mining",             "gethalvingstatus",       &gethalvingstatus,       {} },  // {"mode"} },
-    { "mining",             "getmultialgostatus",     &getmultialgostatus,     {} },
-    //    { "hidden",             "devmultialgostatus",     &getmultialgostatus,     {} },    // to be replaced by getminingstatistic
+    { "mining",             "gethalvinginfo",         &gethalvinginfo,         {} },
+    { "mining",             "getmultialgoinfo",       &getmultialgoinfo,       {} },
+    //    { "hidden",             "devmultialgostatus",     &getmultialgoinfo,     {} },    // to be replaced by getminingstatistic
     // VELES END
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },
     { "mining",             "getblocktemplate",       &getblocktemplate,       {"template_request"} },
