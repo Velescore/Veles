@@ -80,6 +80,8 @@ from test_framework.util import (
     disconnect_nodes,
     get_bip9_status,
     hex_str_to_bytes,
+    sync_blocks,
+    sync_mempools,
     assert_raises_rpc_error,
 )
 

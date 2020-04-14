@@ -1032,7 +1032,7 @@ static UniValue pruneblockchain(const JSONRPCRequest& request)
     }
 
     PruneBlockFilesManual(height);
-    const CBlockIndex* block = ::ChainActive().Tip();
+    const CBlockIndex* block = ::chainActive.Tip();
     assert(block);
     while (block->pprev && (block->pprev->nStatus & BLOCK_HAVE_DATA)) {
         block = block->pprev;

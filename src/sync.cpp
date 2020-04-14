@@ -47,9 +47,7 @@ struct CLockLocation {
 
     std::string ToString() const
     {
-        return strprintf(
-            "%s %s:%s%s (in thread %s)",
-            mutexName, sourceFile, itostr(sourceLine), (fTry ? " (TRY)" : ""), m_thread_name);
+        return mutexName + "  " + sourceFile + ":" + itostr(sourceLine) + (fTry ? " (TRY)" : "");
     }
 
 private:
