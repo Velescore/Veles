@@ -305,7 +305,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
                     "  \"currentblockweight\": nnn, (numeric, optional) The block weight of the last assembled block (only present if a block was ever assembled)\n"
                     "  \"currentblocktx\": nnn,     (numeric, optional) The number of block transactions of the last assembled block (only present if a block was ever assembled)\n"
                     "  \"difficulty\": xxx.xxxxx    (numeric) The current difficulty\n"
-                    "  \"algorithm"": \"...\"       (string) The current mining algo\n" // Veles
+                    "  \"algo\": \"...\"            (string) The current mining algo\n" // Veles
                     "  \"networkhashps\": nnn,      (numeric) The network hashes per second\n"
                     "  \"pooledtx\": n              (numeric) The size of the mempool\n"
                     "  \"chain\": \"xxxx\",         (string) current network name as defined in BIP70 (main, test, regtest)\n"
@@ -314,7 +314,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
                 },
                 RPCExamples{
                     HelpExampleCli("getmininginfo", "")
-            + HelpExampleRpc("getmininginfo", "")
+                  + HelpExampleRpc("getmininginfo", "")
                 },
             }.ToString());
     }
@@ -342,6 +342,7 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
     obj.pushKV("pooledtx",         (uint64_t)mempool.size());
     obj.pushKV("chain",            Params().NetworkIDString());
     obj.pushKV("warnings",         GetWarnings("statusbar"));
+
     return obj;
 }
 
@@ -351,53 +352,49 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
 #if defined(MAC_OSX)
     throw std::runtime_error("(gethalvingstatus)                 *** Temporary disabled on Mac OSX ***\n");
 #else
-    //std::string strMode = "basic";    // no selectable modes in this release
-
-    //if (request.params.size() >= 1) strMode = request.params[0].get_str();
-
-    if (request.fHelp || request.params.size() != 0)    // || (strMode != "basic" && strMode != "full" && strMode != "dev"))
+    if (request.fHelp || request.params.size()) {
         throw std::runtime_error(
-            "gethalvingstatus\n"    // ( \"mode\" )
-            "\nReturns a json object containing an information related to block reward halving. A halving epoch is time between\n"
-            "the start and end of block subsidy halving interval, where maximum block reward is the same for all the blocks\n"
-            "within the epoch. If not enough coins are mined during the epoch, the halving will not occur and the current epoch\n"
-            "will repeat again (with the same interval and maximum block reward). When the halving eventually occurs, the minimal\n"
-            "interval between halvings increases twofold.\n"
-            //"\nArguments:\n"
-            //"1. \"mode\"      (string, optional) The mode to show status in\n"
-            //"\nAvailable modes:\n"
-            //"  basic  - Print just a basic information about halving epochs\n"
-            //"  full   - Print all the information related to subsidy halving and halving epochs\n"
-            "\nResult:\n"
-            "{\n"
-            "  \"halvings_occured\": nnn,           (numeric) The number of successful halvings that has occured\n"
-            "  \"epochs_occured\": nnn,             (numeric) The number of halving epochs that has occured\n"
-            "  \"halving_interval\": nnn,           (numeric) Interval between the last halving and the next potential one\n"
-            "  \"blocks_to_next_epoch\": nnn,       (numeric) Number of blocks to be fund until the start of another halving epoch\n"
-            "  \"epoch_supply_target_reached\": xxx, (string) Ratio between theoretical and actual number of coins to be mined this halving period, see also description of 'supply_target_reached'.\n"
-            "  \"min_epoch_supply_to_halve\": xxx,   (string) Minimum ratio between theoretical and actual coin supply during halving period required for another halving to occur\n"
-            "  \"epochs\" : [                         (array) List of halving epochs that has already occured and the current epoch\n"
-            "     {\n"
-            "       \"epoch_name\": xxx,             (string) Unique name of the epoch\n"
-            "       \"started_by_halving\": xx,     (boolean) If true, the amount of block reward has been halved at the start of current epoch\n"
-            "       \"start_block\": nnn,           (numeric) Height of fist block in the halving epoch\n"
-            "       \"end_block\": nnn,             (numeric) Height of last block of the epoch\n"
-            "       \"max_block_reward\": nnn,      (numeric) Maximum possible number of new coins mined within a single block, the sum of PoW, Masternode and Dev fund reward.\n"
-            "       \"dynamic_rewards_boost\": xxx, (string|false) Percentage of increase in dynamic block rewards (within the max_block_reward limit) if coin supply released during the last epoch was less than " + std::to_string((int)(HALVING_MIN_BOOST_SUPPLY_TARGET * 100)) + "\% of the target\n"
-            "       \"start_supply\": nnn,          (numeric) Total number of coins in circulation before fist block of the epoch\n"
-            "       \"end_supply\": nnn,      (numeric|false) Total number of coins in circulation at the last block of the epoch \n"
-            "       \"supply_target\": nnn,         (numeric) Maximum number of coins that can theoretically be released to the circulation during the epoch\n"
-            "       \"supply_this_epoch\": nnn,     (numeric) Actual number of coins that were released to the circulation during the epoch\n"
-            "       \"supply_since_halving\": nnn,  (numeric) Actual number of coins that were released to the circulation since the last halving\n"
-            "       \"supply_target_reached\" xxx,   (string) Ratio between supply_target and supply_since_halving in percents\n"
-            "     },"
-            "     ...\n"
-            "   ]\n"
-            "}\n"
-            "\nExamples:\n"
-            + HelpExampleCli("gethalvingstatus", "")
-            + HelpExampleRpc("gethalvingstatus", "")
+            RPCHelpMan{"gethalvingstatus",
+                "\nReturns a json object containing an information related to block reward halving. A halving epoch is time between\n"
+                "the start and end of block subsidy halving interval, where maximum block reward is the same for all the blocks\n"
+                "within the epoch. If not enough coins are mined during the epoch, the halving will not occur and the current epoch\n"
+                "will repeat again (with the same interval and maximum block reward). When the halving eventually occurs, the minimal\n"
+                "interval between halvings increases twofold.",
+                {},
+                RPCResult{
+                    "{\n"
+                    "  \"halvings_occured\": nnn,           (numeric) The number of successful halvings that has occured\n"
+                    "  \"epochs_occured\": nnn,             (numeric) The number of halving epochs that has occured\n"
+                    "  \"halving_interval\": nnn,           (numeric) Interval between the last halving and the next potential one\n"
+                    "  \"blocks_to_next_epoch\": nnn,       (numeric) Number of blocks to be fund until the start of another halving epoch\n"
+                    "  \"epoch_supply_target_reached\": xxx, (string) Ratio between theoretical and actual number of coins to be mined this halving period, see also description of 'supply_target_reached'.\n"
+                    "  \"min_epoch_supply_to_halve\": xxx,   (string) Minimum ratio between theoretical and actual coin supply during halving period required for another halving to occur\n"
+                    "  \"epochs\" : [                         (array) List of halving epochs that has already occured and the current epoch\n"
+                    "     {\n"
+                    "       \"epoch_name\": xxx,             (string) Unique name of the epoch\n"
+                    "       \"started_by_halving\": xx,     (boolean) If true, the amount of block reward has been halved at the start of current epoch\n"
+                    "       \"start_block\": nnn,           (numeric) Height of fist block in the halving epoch\n"
+                    "       \"end_block\": nnn,             (numeric) Height of last block of the epoch\n"
+                    "       \"max_block_reward\": nnn,      (numeric) Maximum possible number of new coins mined within a single block, the sum of PoW, Masternode and Dev fund reward.\n"
+                    "       \"dynamic_rewards_boost\": xxx, (string|false) Percentage of increase in dynamic block rewards (within the max_block_reward limit) if coin supply released during the last epoch was less than " + std::to_string((int)(HALVING_MIN_BOOST_SUPPLY_TARGET * 100)) + "\% of the target\n"
+                    "       \"start_supply\": nnn,          (numeric) Total number of coins in circulation before fist block of the epoch\n"
+                    "       \"end_supply\": nnn,      (numeric|false) Total number of coins in circulation at the last block of the epoch \n"
+                    "       \"supply_target\": nnn,         (numeric) Maximum number of coins that can theoretically be released to the circulation during the epoch\n"
+                    "       \"supply_this_epoch\": nnn,     (numeric) Actual number of coins that were released to the circulation during the epoch\n"
+                    "       \"supply_since_halving\": nnn,  (numeric) Actual number of coins that were released to the circulation since the last halving\n"
+                    "       \"supply_target_reached\" xxx,   (string) Ratio between supply_target and supply_since_halving in percents\n"
+                    "     },"
+                    "     ...\n"
+                    "   ]\n"
+                    "}\n"
+                },
+                RPCExamples{
+                    HelpExampleCli("gethalvingstatus", "")
+                  + HelpExampleRpc("gethalvingstatus", "")
+                },
+            }.ToString()
         );
+    }
 
     HalvingParameters *halvingParams = GetSubsidyHalvingParameters();
     std::vector<std::string> knownEpochs = { "COINSWAP", "BOOTSTRAP", "ALPHA" };
@@ -419,7 +416,7 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
     obj.pushKV("halving_interval", halvingParams->nHalvingInterval);
     obj.pushKV("blocks_to_next_epoch", (uint64_t)halvingParams->epochs.back().nEndBlock - chainActive.Height());
 
-    // list of mining epochs
+    // list through mining epochs
     for (int i = 0; i < (int)halvingParams->epochs.size(); i++) {
         if (halvingParams->epochs[i].fIsSubsidyHalved) {
             nHalvings++;
@@ -454,7 +451,6 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
         childObj.pushKV("end_block", halvingParams->epochs[i].nEndBlock);
         childObj.pushKV("max_block_reward", ValueFromAmount(halvingParams->epochs[i].nMaxBlockSubsidy));
 
-        //if (strMode == "full") {
         if (halvingParams->epochs[i].nDynamicRewardsBoostFactor > 0)
             childObj.pushKV("dynamic_rewards_boost", "+" + std::to_string((int)(halvingParams->epochs[i].nDynamicRewardsBoostFactor * 100)) + "\%");
         else
@@ -464,7 +460,7 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
         childObj.pushKV("end_supply", (halvingParams->epochs[i].fHasEnded)
             ? ValueFromAmount(halvingParams->epochs[i].nEndSupply)
             : false);
-        //}
+
         childObj.pushKV("supply_target", ValueFromAmount(nEpochMaxSupply));
         childObj.pushKV("supply_this_epoch", ValueFromAmount(nEpochRealSupply));
         childObj.pushKV("supply_since_halving", ValueFromAmount(nSupplySinceHalving));
@@ -474,14 +470,9 @@ static UniValue gethalvingstatus(const JSONRPCRequest& request)
         childArr.push_back(childObj);
     }
 
-    //if (strMode == "full") {
     obj.pushKV("epoch_supply_target_reached", std::to_string((int)floor((double)nSupplySinceHalving
             / ((double)nEpochMaxSupply) * 100)) + "\%");
     obj.pushKV("min_epoch_supply_to_halve", std::to_string((int)(HALVING_MIN_SUPPLY_TARGET * 100)) + "\%");
-    //obj.pushKV("max_supply_target_to_boost", std::to_string((int)(HALVING_MIN_BOOST_SUPPLY_TARGET * 100)) + "\%");
-    //}
-
-    //obj.push_back(Pair("epochs", childArr));
     obj.pushKV("epochs", childArr);
 
     return obj;
@@ -493,21 +484,21 @@ static UniValue getmultialgostatus(const JSONRPCRequest& request)
 #if defined(MAC_OSX)
     throw std::runtime_error("(getmultialgostatus)               *** Temporary disabled on Mac OSX ***\n");
 #else
-    if (request.fHelp || request.params.size() != 0)
+    if (request.fHelp || request.params.size())
         throw std::runtime_error(
             RPCHelpMan{"getmultialgostatus",
             "\nReturns a json object containing information related to multi-algo mining.",
             {},
             RPCResult{
-            //"[\n"
+            "[\n"
             "  {\n"
             "    \"algorithm"": xxxxxx             (string)  PoW algorithm algorithm name.\n"
             "    \"difficulty\": xxx.xxxxx,        (numeric) The current difficulty\n"
             "    \"hashrate\": xxx.xxxxx,          (numeric) The network hashes per second\n"
             "    \"last_block_index\" : xx         (numeric) Number of the last block generated by the algorithm\n"
             "  },\n"
-            //"   ..."
-            //"]\n"
+            "   ..."
+            "]\n"
             //"\nSupported algorithms:\n"
             //"  sha256d, scrypt, lyra2z, x11, x16, nist5.\n"
             },
@@ -715,8 +706,8 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
             "}\n"
                 },
                 RPCExamples{
-                    HelpExampleCli("getblocktemplate", "{\"rules\": [\"segwit\"]} x16r")    // Veles: Added parameter to the example
-            + HelpExampleRpc("getblocktemplate", "{\"rules\": [\"segwit\"]} x16r")
+                    HelpExampleCli("getblocktemplate", "'{\"rules\": [\"segwit\"]}' x16r")    // Veles: Added parameter to the example
+                  + HelpExampleRpc("getblocktemplate", "'{\"rules\": [\"segwit\"]}' x16r")
                 },
             }.ToString()
         // VELES BEGIN
