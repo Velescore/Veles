@@ -2790,10 +2790,11 @@ void static UpdateTip(const CBlockIndex *pindexNew, const CChainParams& chainPar
     }
 
     std::string warningMessages;
-    // VELES BEGIN
-    //if (!IsInitialBlockDownload())
-    if (false)
-    // VELES END
+    // Veles edit
+    // Do not throw warning on the production network, it seems that asic-boost miners
+    // on sha256d tend to trigger this warning condition
+    if (!IsInitialBlockDownload() && chainParams.NetworkIDString() != "main")
+    //
     {
         int nUpgraded = 0;
         const CBlockIndex* pindex = pindexNew;
