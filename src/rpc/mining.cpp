@@ -1450,9 +1450,9 @@ static const CRPCCommand commands[] =
 
     { "hidden",             "estimaterawfee",         &estimaterawfee,         {"conf_target", "threshold"} },
     // Veles
-    // Backward-compatible calls, completely remove in 0.21.x
-    { "hidden",             "gethalvingstatus",       &gethalvinginfo,         {} },
-    { "hidden",             "getmultialgostatus",     &getmultialgoinfo,       {} }  
+    // Backward-compatible calls
+    { "hidden",             "gethalvingstatus",       &gethalvinginfo,         {} },    // DEPRECATE in 0.19
+    { "hidden",             "getmultialgostatus",     &getmultialgoinfo,       {} }     // DEPRECATE in 0.19
     //
 };
 // clang-format on

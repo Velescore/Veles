@@ -53,7 +53,7 @@ def process_commands(fname):
             else:
                 if line.startswith('};'):
                     in_rpcs = False
-                elif '{' in line and '"' in line:
+                elif '{' in line and '"' in line and 'DEPRECATE' not in line:      # Veles: Skip the test for hidden functions
                     m = re.search('{ *("[^"]*"), *("[^"]*"), *&([^,]*), *{([^}]*)} *},', line)
                     assert m, 'No match to table expression: %s' % line
                     name = parse_string(m.group(2))
