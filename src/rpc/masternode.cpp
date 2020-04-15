@@ -53,7 +53,7 @@ UniValue privatesend(const JSONRPCRequest& request)
             "       \"reset\" - Reset mixing"},
                 },
                 RPCResult{
-            "Not documented by Dash developers.\n"
+            "(object, mixed)\n"    // todo: add proper description
                 },
                 RPCExamples{
                     HelpExampleCli("privatesend", "start")
@@ -104,12 +104,20 @@ UniValue getpoolinfo(const JSONRPCRequest& request)
             RPCHelpMan{"getpoolinfo",
                 "\nReturns an object containing mixing pool related information.\n",
                 {},
-                RPCResult{
-            "Not documented by Dash developers.\n"
+                RPCResult{  // TODO: Add descriptions to the result
+                    "{\n"
+                    "  \"state\": \"...\",          (string)\n"
+                    "  \"mixing_mode\": \"...\",    (string)\n"
+                    "  \"queue\": nnn,              (numeric)\n"
+                    "  \"entries\": nnn,            (numeric)\n"
+                    "  \"status\": \"...\",         (string)\n"
+                    "  \"keys_left\": nnnnnnnn,     (numeric)\n"
+                    "  \"warnings\": \"...\",       (string)\n"
+                    "}\n"
                 },
                 RPCExamples{
                     HelpExampleCli("getpoolinfo", "")
-            + HelpExampleRpc("getpoolinfo", "")
+                    + HelpExampleRpc("getpoolinfo", "")
                 },
             }.ToString());
 
@@ -198,7 +206,7 @@ UniValue masternode(const JSONRPCRequest& request)
                         },
                     },
                     RPCResult{
-                "Not documented by Dash developers.\n"
+                "(object, mixed)\n"    // todo: add proper description
                     },
                     RPCExamples{
                         HelpExampleCli("masternode", "collateral")
@@ -562,7 +570,7 @@ UniValue masternodelist(const JSONRPCRequest& request)
             "                            additional matches in some modes are also available"},
                 },
                 RPCResult{
-            "Not documented by Dash developers.\n"
+            "(object, mixed)\n"    // todo: add proper description
                 },
                 RPCExamples{
                     HelpExampleCli("masternodelist", "status")
@@ -711,7 +719,7 @@ UniValue masternodebroadcast(const JSONRPCRequest& request)
             "       \"relay\"         - Relay masternode broadcast message to the network"},
                 },
                 RPCResult{
-            "Not documented by Dash developers.\n"
+            "(object, mixed)\n"    // todo: add proper description
                 },
                 RPCExamples{
                     HelpExampleCli("masternodebroadcast", "create-all")
