@@ -68,6 +68,10 @@ std::string GetWarnings(const std::string& strFor)
         strGUI += (strGUI.empty() ? "" : uiAlertSeperator) + _("Warning: We do not appear to fully agree with our peers! You may need to upgrade, or other nodes may need to upgrade.");
     }
 
+    // Big fat deprecation warning for the 0.17 branch
+    strStatusBar = "Warning: This is an old-stable version 0.17 for compatibility purposes, it is strongly advised to update to the latest subversion of 0.18 or newer, as it might stop receiving security and consensus updates in the near future";
+    strGUI += _("Warning: This is an old-stable version 0.17 for compatibility purposes, it is strongly advised to update to the latest subversion of 0.18 or newer, as it might stop receiving security and consensus updates in the near future");
+
     if (strFor == "gui")
         return strGUI;
     else if (strFor == "statusbar")
