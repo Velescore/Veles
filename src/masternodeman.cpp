@@ -16,6 +16,7 @@
 #include <privatesend-client.h>
 #endif // ENABLE_WALLET
 #include <script/standard.h>
+#include <spork.h>	// VELES
 #include <util.h>
 // VELES BEGIN
 #if defined(ENABLE_WALLET) && defined(ENABLE_MN_HELPER)
@@ -1543,7 +1544,7 @@ bool CMasternodeMan::IsWatchdogActive()
 {
     LOCK(cs);
     // Check if any masternodes have voted recently, otherwise return false
-    return (GetTime() - nLastWatchdogVoteTime) <= MASTERNODE_WATCHDOG_MAX_SECONDS;
+    return sporkManager.IsSporkActive(SPORK_14_REQUIRE_SENTINEL_FLAG) && (GetTime() - nLastWatchdogVoteTime) <= MASTERNODE_WATCHDOG_MAX_SECONDS;
 }
 
 bool CMasternodeMan::AddGovernanceVote(const COutPoint& outpoint, uint256 nGovernanceObjectHash)
