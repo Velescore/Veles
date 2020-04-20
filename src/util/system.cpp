@@ -1280,16 +1280,17 @@ int GetNumCores()
 
 std::string CopyrightHolders(const std::string& strPrefix)
 {
-    // FXTC BEGIN
+    // VELES BEGIN
     //std::string strCopyrightHolders = strPrefix + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
-    std::string strCopyrightHolders = strPrefix + strprintf(" %u-%u ", 2009, COPYRIGHT_YEAR) + "The Bitcoin Core developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2014, 2018) + "The Dash Core developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2014, 2018) + "The Talkcoin developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2017, 2018) + "The Zcoin developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2017, 2018) + "The PIVX developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2018, 2019) + "The FxTC Core developers";
-    strCopyrightHolders += "\n" + strPrefix + strprintf(" %u-%u ", 2018, COPYRIGHT_YEAR) + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
-    // FXTC END
+     std::string strCopyrightHolders = strPrefix + " 2018-" + std::to_string(COPYRIGHT_YEAR) + " The Veles Core developers\n"
+        + strPrefix + " 2018-" + std::to_string(FXTC_COPYRIGHT_YEAR) + " The FxTC developers\n"
+        + strPrefix + " 2017-2018 The PIVX developers\n"
+        + strPrefix + " 2017-2018 The Zcoin developers\n"
+        + strPrefix + " 2014-2018 The Talkcoin developers\n"
+        + strPrefix + " 2014-" + std::to_string(DASH_COPYRIGHT_YEAR) + " The Dash Core developers\n"
+        + strPrefix + " 2009-" + std::to_string(BITCORE_COPYRIGHT_YEAR) + " The Bitcoin Core developers\n"
+        + strPrefix + " 2009-2010 Satoshi Nakamoto";
+    // VELES END
 
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
     if (strCopyrightHolders.find("Bitcoin Core") == std::string::npos) {
