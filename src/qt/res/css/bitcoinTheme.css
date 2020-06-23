@@ -13,3 +13,10 @@ QObject#contentWidget {
 	border-radius: 3px;
 	border: 1px solid  rgba(17, 17, 17, 0.5);
 }
+
+QPushButton[cssClass="download-config-button"] {
+    background-color: transparent;
+    border:0px;
+    color: blue;
+    text-decoration: underline;
+}

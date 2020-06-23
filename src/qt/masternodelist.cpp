@@ -20,6 +20,16 @@
 
 #include <QTimer>
 #include <QMessageBox>
+#include <QUrlQuery>
+#include <QUrl>
+#include <QNetworkRequest>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QDesktopServices>
+#include <QUrl>
 
 int GetOffsetFromUtc()
 {
@@ -52,12 +62,20 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     int columnLastSeenWidth = 130;
     */
     /*edit values to fit in the window without horizontal scrollbar need old values stay in comment*/
-    int columnAliasWidth = 70; //100
-    int columnAddressWidth = 160; //200
-    int columnProtocolWidth = 90; // 60
-    int columnStatusWidth = 80;
-    int columnActiveWidth = 130;
+    int columnAliasWidth = 70; 
+    int columnAddressWidth = 130;
+    int columnProtocolWidth = 100;
+    int columnStatusWidth = 110;
+    int columnActiveWidth = 120;
     int columnLastSeenWidth = 130;
+
+    int columnIpAddressWidth = 120; 
+    int columnServiceWidth = 80;
+    int columnApiLatencyWidth = 80;
+    int columnStatusDappWidth = 100;
+    int columnApiVersionWidth = 100;
+    int columnSignKeyWidth = 180;
+    int columnDownloadConfigWidth = 40;
     // VELES END
 
     ui->tableWidgetMyMasternodes->setColumnWidth(0, columnAliasWidth);
@@ -73,6 +91,16 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     ui->tableWidgetMasternodes->setColumnWidth(3, columnActiveWidth);
     ui->tableWidgetMasternodes->setColumnWidth(4, columnLastSeenWidth);
 
+    // VELES BEGIN
+    ui->tableWidgetDappsMasternodes->setColumnWidth(0, columnIpAddressWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(1, columnServiceWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(2, columnApiLatencyWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(3, columnStatusDappWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(4, columnApiVersionWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(5, columnSignKeyWidth);
+    ui->tableWidgetDappsMasternodes->setColumnWidth(6, columnDownloadConfigWidth);
+    // VELES END
+
     ui->tableWidgetMyMasternodes->setContextMenuPolicy(Qt::CustomContextMenu);
 
     QAction *startAliasAction = new QAction(tr("Start alias"), this);
@@ -84,11 +112,13 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this]{ updateNodeList(); });
     connect(timer, &QTimer::timeout, [this]{ updateMyNodeList(); });
+    connect(timer, &QTimer::timeout, [this]{ updateDappsNodeList(); }); //VELES
     timer->start(1000);
 
     fFilterUpdated = false;
     nTimeFilterUpdated = GetTime();
     updateNodeList();
+    //updateDappsNodeList(); // VELES
 }
 
 MasternodeList::~MasternodeList()
@@ -330,6 +360,106 @@ void MasternodeList::updateNodeList()
     ui->tableWidgetMasternodes->setSortingEnabled(true);
 }
 
+// VELES BEGIN
+void MasternodeList::updateDappsNodeList(bool fForce)
+{
+    TRY_LOCK(cs_dappmnlist, fLockAcquired);
+    if(!fLockAcquired) {
+        return;
+    }
+
+    QEventLoop eventLoop;
+    QNetworkRequest request;
+
+    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+
+    connect(manager, SIGNAL(finished(QNetworkReply*)),&eventLoop, SLOT(quit()));
+    request.setUrl(QUrl("https://explorer.veles.network/dapi/mn/list/assoc"));
+    QNetworkReply *reply = manager->get(request);
+    eventLoop.exec();
+    
+    ui->countLabelDapps->setText("Updating...");
+
+    if (reply->error() == QNetworkReply::NoError) {
+        
+        ui->tableWidgetDappsMasternodes->setSortingEnabled(false);
+        ui->tableWidgetDappsMasternodes->clearContents();
+        ui->tableWidgetDappsMasternodes->setRowCount(0);
+            
+        QString dappsMasternodeList = reply->readAll();
+        QJsonDocument document = QJsonDocument::fromJson(dappsMasternodeList.toUtf8());
+        QJsonObject root = document.object();
+        QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
+
+        for(int i = 0; i < rootValue.count(); i++) {
+
+            QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
+            QJsonValue addressValue = subtree["ip"].toString();
+            QJsonValue apiLatencyValue = subtree["api_latency"];
+            QJsonValue statusValue = subtree["status"];
+            QJsonValue versionValue = subtree["api_version"];
+            QJsonValue signKeyValue = subtree["signing_key"];
+            QString serviceListStr = "";
+            QJsonArray servicesArray = subtree["services_available"].toArray();
+
+            for(int j = 0; j < servicesArray.size(); j++) {
+                serviceListStr += servicesArray[j].toString();
+            }
+
+            if(apiLatencyValue.toInt()) {
+
+                QTableWidgetItem *addressItem = new QTableWidgetItem(addressValue.toString());
+                QTableWidgetItem *servicesItem = new QTableWidgetItem(serviceListStr);
+                QTableWidgetItem *apiLatencyItem = new QTableWidgetItem();
+                QTableWidgetItem *statusItem = new QTableWidgetItem(statusValue.toString());
+                QTableWidgetItem *apiVersionItem = new QTableWidgetItem(versionValue.toString());
+                QTableWidgetItem *signKeyItem = new QTableWidgetItem(signKeyValue.toString());
+
+                apiLatencyItem->setData(Qt::EditRole,QVariant(apiLatencyValue));
+
+                QWidget *downloadConfigButtonWidget = new QWidget();
+                QPushButton *downloadConfigButton = new QPushButton();
+                downloadConfigButton->setProperty("cssClass", "download-config-button");
+                downloadConfigButton->setText("Download Config");
+                QHBoxLayout *downloadConfigButtonLayout = new QHBoxLayout(downloadConfigButtonWidget);
+                downloadConfigButtonLayout->addWidget(downloadConfigButton);
+                downloadConfigButtonLayout->setAlignment(Qt::AlignCenter);
+                downloadConfigButtonLayout->setContentsMargins(0, 0, 0, 1);
+                downloadConfigButtonWidget->setLayout(downloadConfigButtonLayout);
+
+                QString configUrl;
+                QString apiDefaultValue = "000100";
+                QString apiActualValue = versionValue.toString();
+                char* apiDefaultValueChar = strdup(qPrintable(apiDefaultValue));
+                char* apiActualValueChar = strdup(qPrintable(apiActualValue));
+
+                if (strcmp(apiActualValueChar, apiDefaultValueChar) == 0 ) {
+                    configUrl = "https://" + addressValue.toString() + "/api/getOpenVPNConfig";
+                } else {
+                    configUrl = "https://" + addressValue.toString() + "/api/getAllConfigArchive";
+                }
+
+                connect( downloadConfigButton, &QPushButton::clicked, this, [=](){ QDesktopServices::openUrl(QUrl(configUrl)); });
+
+                ui->tableWidgetDappsMasternodes->insertRow(0);
+                ui->tableWidgetDappsMasternodes->setItem(0, 0, addressItem);
+                ui->tableWidgetDappsMasternodes->setItem(0, 1, servicesItem);
+                ui->tableWidgetDappsMasternodes->setItem(0, 2, apiLatencyItem);
+                ui->tableWidgetDappsMasternodes->setItem(0, 3, statusItem);
+                ui->tableWidgetDappsMasternodes->setItem(0, 4, apiVersionItem);
+                ui->tableWidgetDappsMasternodes->setItem(0, 5, signKeyItem);                
+                ui->tableWidgetDappsMasternodes->setCellWidget(0, 6, downloadConfigButtonWidget);
+            }
+        } 
+
+        ui->countLabelDapps->setText(QString::number(ui->tableWidgetDappsMasternodes->rowCount()));
+        ui->tableWidgetDappsMasternodes->setSortingEnabled(true);
+
+        delete reply;
+    }
+}
+// VELES END
+
 void MasternodeList::on_filterLineEdit_textChanged(const QString &strFilterIn)
 {
     strCurrentFilter = strFilterIn;
@@ -443,3 +573,10 @@ void MasternodeList::on_UpdateButton_clicked()
 {
     updateMyNodeList(true);
 }
+
+// VELES BEGIN
+void MasternodeList::on_DappsUpdateButton_clicked()
+{
+    updateDappsNodeList(true);
+}
+// VELES END

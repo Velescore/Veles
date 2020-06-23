@@ -16,6 +16,7 @@
 #include <QWidget>
 
 #define MY_MASTERNODELIST_UPDATE_SECONDS                 60
+#define DAPPS_MASTERNODELIST_UPDATE_SECONDS              60 // VELES
 #define MASTERNODELIST_UPDATE_SECONDS                    15
 #define MASTERNODELIST_FILTER_COOLDOWN_SECONDS            3
 
@@ -53,6 +54,7 @@ public Q_SLOTS:
     void updateMyMasternodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
     void updateMyNodeList(bool fForce = false);
     void updateNodeList();
+    void updateDappsNodeList(bool fForce = false); // VELES
 
 Q_SIGNALS:
 
@@ -68,6 +70,9 @@ private:
     // Protects tableWidgetMyMasternodes
     CCriticalSection cs_mymnlist;
 
+    // Protects tableWidgetDappMasternodes
+    CCriticalSection cs_dappmnlist;
+
     QString strCurrentFilter;
 
 private Q_SLOTS:
@@ -78,6 +83,7 @@ private Q_SLOTS:
     void on_startMissingButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
+    void on_DappsUpdateButton_clicked(); // VELES
 };
 
 #endif // DASH_QT_MASTERNODELIST_H

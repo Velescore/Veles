@@ -783,12 +783,13 @@ QWidget#tabWidget {
 	border-radius: 5px;
 }
 
-QObject#tableWidgetMyMasternodes {
+QObject#tableWidgetMyMasternodes,
+QObject#tableWidgetDappsMasternodes,
+QObject#tableWidgetMasternodes {
 	border: 1px solid rgba(17, 17, 17, 0.7);
 	background-color: #313131;
 }
 
-QObject#tableWidgetMasternodes {
  background-color: #313131;
  border: 1px solid rgba(17, 17, 17, 0.7);
 }
@@ -964,6 +965,13 @@ QScrollBar::sub-line:horizontal {
 QScrollBar::add-line:horizontal {
     subcontrol-position: right;
     subcontrol-origin: margin;
+}
+
+QPushButton[cssClass="download-config-button"] {
+    background-color: transparent;
+    border:0px;
+    color: blue;
+    text-decoration: underline;
 }
 
 /********************************* Useful *************************************/

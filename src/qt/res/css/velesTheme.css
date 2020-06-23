@@ -744,18 +744,14 @@ QWidget#tabWidget {
 	border-radius: 5px;
 }
 
-QObject#tableWidgetMyMasternodes {
+QObject#tableWidgetMyMasternodes,
+QObject#tableWidgetDappsMasternodes,
+QObject#tableWidgetMasternodes {
 	border-radius: 3px;
 	border: 1px solid rgba(17, 17, 17, 0.7);
 	background-color: rgba(85, 85, 85, 0.5);
 }
-/*
-QObject#tableWidgetMyMasternodes > .QTableView {
-    background: rgba(85, 85, 85, 0.5);
-    border: 1px solid rgba(17, 17, 17, 0.7);
-		border-radius: 3px;
-}
-*/
+
 QObject#tableWidgetMasternodes {
  background-color: rgba(85, 85, 85, 0.5);
  border-radius: 3px;
@@ -934,6 +930,13 @@ QScrollBar::sub-line:horizontal {
 QScrollBar::add-line:horizontal {
     subcontrol-position: right;
     subcontrol-origin: margin;
+}
+
+QPushButton[cssClass="download-config-button"] {
+    background-color: transparent;
+    border:0px;
+    color: #f19b7e;
+    text-decoration: underline;
 }
 
 /********************************* Useful *************************************/
