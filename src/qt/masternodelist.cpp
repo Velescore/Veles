@@ -112,13 +112,13 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this]{ updateNodeList(); });
     connect(timer, &QTimer::timeout, [this]{ updateMyNodeList(); });
-    connect(timer, &QTimer::timeout, [this]{ updateDappsNodeList(); }); //VELES
+    //connect(timer, &QTimer::timeout, [this]{ updateDappsNodeList(); }); //VELES
     timer->start(1000);
 
     fFilterUpdated = false;
     nTimeFilterUpdated = GetTime();
     updateNodeList();
-    //updateDappsNodeList(); // VELES
+    updateDappsNodeList(); // VELES
 }
 
 MasternodeList::~MasternodeList()
