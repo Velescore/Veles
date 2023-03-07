@@ -368,43 +368,33 @@ void MasternodeList::updateDappsNodeList(bool fForce)
         return;
     }
 
+    QNetworkAccessManager manager;
     QEventLoop eventLoop;
-    QNetworkRequest request;
 
-    QNetworkAccessManager * manager = new QNetworkAccessManager(this);
+    connect(&manager, &QNetworkAccessManager::finished, &eventLoop, [&]() {
+        ui->countLabelDapps->setText("Updating...");
 
-    connect(manager, SIGNAL(finished(QNetworkReply*)),&eventLoop, SLOT(quit()));
-    request.setUrl(QUrl("https://explorer.veles.network/dapi/mn/list/assoc"));
-    QNetworkReply *reply = manager->get(request);
-    eventLoop.exec();
-    
-    ui->countLabelDapps->setText("Updating...");
+        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
+        if (reply->error() == QNetworkReply::NoError) {
 
-    if (reply->error() == QNetworkReply::NoError) {
-        
-        ui->tableWidgetDappsMasternodes->setSortingEnabled(false);
-        ui->tableWidgetDappsMasternodes->clearContents();
-        ui->tableWidgetDappsMasternodes->setRowCount(0);
-            
-        QString dappsMasternodeList = reply->readAll();
-        QJsonDocument document = QJsonDocument::fromJson(dappsMasternodeList.toUtf8());
-        QJsonObject root = document.object();
-        QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
+            ui->tableWidgetDappsMasternodes->setRowCount(0);
 
-        for(int i = 0; i < rootValue.count(); i++) {
+            QString dappsMasternodeList = reply->readAll();
+            QJsonDocument document = QJsonDocument::fromJson(dappsMasternodeList.toUtf8());
+            QJsonObject root = document.object();
+            QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
 
-            QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
-            QJsonValue addressValue = subtree["ip"].toString();
-            QJsonValue apiLatencyValue = subtree["api_latency"];
-            QJsonValue statusValue = subtree["status"];
-            QJsonValue versionValue = subtree["api_version"];
-            QJsonValue signKeyValue = subtree["signing_key"];
-            QString serviceListStr = "";
-            QJsonArray servicesArray = subtree["services_available"].toArray();
+            for(int i = 0; i < rootValue.count(); i++) {
 
-            for(int j = 0; j < servicesArray.size(); j++) {
-                serviceListStr += servicesArray[j].toString();
-            }
+                QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
+                QJsonValue addressValue = subtree["ip"].toString();
+                QJsonValue apiLatencyValue = subtree["api_latency"];
+                QJsonValue statusValue = subtree["status"];
+                QJsonValue versionValue = subtree["api_version"];
+                QJsonValue signKeyValue = subtree["signing_key"];
+
+                QJsonArray servicesArray = subtree["services_available"].toArray();
+                QString serviceListStr = servicesArray.join(", ");
 
             if(apiLatencyValue.toInt()) {
 
@@ -415,7 +405,7 @@ void MasternodeList::updateDappsNodeList(bool fForce)
                 QTableWidgetItem *apiVersionItem = new QTableWidgetItem(versionValue.toString());
                 QTableWidgetItem *signKeyItem = new QTableWidgetItem(signKeyValue.toString());
 
-                apiLatencyItem->setData(Qt::EditRole,QVariant(apiLatencyValue));
+                apiLatencyItem->setData(Qt::UserRole, QVariant::fromValue(apiLatencyValue));
 
                 QWidget *downloadConfigButtonWidget = new QWidget();
                 QPushButton *downloadConfigButton = new QPushButton();
