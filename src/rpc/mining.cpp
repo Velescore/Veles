@@ -539,8 +539,19 @@ static UniValue getminingstats(const JSONRPCRequest& request)
 
         algoObj.pushKV("algo", GetAlgoName(algos[i]));
         algoObj.pushKV("last_block_reward", ValueFromAmount(GetBlockSubsidy(pb->nHeight, pb->GetBlockHeader(), Params().GetConsensus(), false)));
-        algoObj.pushKV("avg_block_reward_24h", ValueFromAmount(CountAlgoBlockRewards(algos[i], nBlocksTotal24h) / nAlgoBlocks24h));
-        algoObj.pushKV("avg_block_reward_7d", ValueFromAmount(CountAlgoBlockRewards(algos[i], nBlocksTotal7d) / nAlgoBlocks7d));
+
+        if (nAlgoBlocks24h > 0) {
+            algoObj.pushKV("avg_block_reward_24h", ValueFromAmount(CountAlgoBlockRewards(algos[i], nBlocksTotal24h) / nAlgoBlocks24h));
+        } else {
+            algoObj.pushKV("avg_block_reward_24h", 0);
+        }
+
+        if (nAlgoBlocks7d > 0) {
+            algoObj.pushKV("avg_block_reward_7d", ValueFromAmount(CountAlgoBlockRewards(algos[i], nBlocksTotal7d) / nAlgoBlocks7d));
+        } else {
+            algoObj.pushKV("avg_block_reward_7d", 0);
+        }
+
         algoObj.pushKV("total_blocks_24h", nAlgoBlocks24h);
         algoObj.pushKV("total_blocks_7d", nAlgoBlocks7d);
         // algoObj.pushKV("cost_factor", GetAlgoCostFactor(algos[i]));  // if shown it should be calculated to some human-understandable form, like %
