@@ -364,7 +364,7 @@ void MasternodeList::updateNodeList()
 void MasternodeList::updateDappsNodeList(bool fForce)
 {
     TRY_LOCK(cs_dappmnlist, fLockAcquired);
-    if(!fLockAcquired) {
+    if (!fLockAcquired) {
         return;
     }
 
@@ -384,7 +384,7 @@ void MasternodeList::updateDappsNodeList(bool fForce)
             QJsonObject root = document.object();
             QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
 
-            for(int i = 0; i < rootValue.count(); i++) {
+            for (int i = 0; i < rootValue.count(); i++) {
 
                 QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
                 QJsonValue addressValue = subtree["ip"].toString();
@@ -394,59 +394,68 @@ void MasternodeList::updateDappsNodeList(bool fForce)
                 QJsonValue signKeyValue = subtree["signing_key"];
 
                 QJsonArray servicesArray = subtree["services_available"].toArray();
-                QString serviceListStr = servicesArray.join(", ");
 
-            if(apiLatencyValue.toInt()) {
-
-                QTableWidgetItem *addressItem = new QTableWidgetItem(addressValue.toString());
-                QTableWidgetItem *servicesItem = new QTableWidgetItem(serviceListStr);
-                QTableWidgetItem *apiLatencyItem = new QTableWidgetItem();
-                QTableWidgetItem *statusItem = new QTableWidgetItem(statusValue.toString());
-                QTableWidgetItem *apiVersionItem = new QTableWidgetItem(versionValue.toString());
-                QTableWidgetItem *signKeyItem = new QTableWidgetItem(signKeyValue.toString());
-
-                apiLatencyItem->setData(Qt::UserRole, QVariant::fromValue(apiLatencyValue));
-
-                QWidget *downloadConfigButtonWidget = new QWidget();
-                QPushButton *downloadConfigButton = new QPushButton();
-                downloadConfigButton->setProperty("cssClass", "download-config-button");
-                downloadConfigButton->setText("Download Config");
-                QHBoxLayout *downloadConfigButtonLayout = new QHBoxLayout(downloadConfigButtonWidget);
-                downloadConfigButtonLayout->addWidget(downloadConfigButton);
-                downloadConfigButtonLayout->setAlignment(Qt::AlignCenter);
-                downloadConfigButtonLayout->setContentsMargins(0, 0, 0, 1);
-                downloadConfigButtonWidget->setLayout(downloadConfigButtonLayout);
-
-                QString configUrl;
-                QString apiDefaultValue = "000100";
-                QString apiActualValue = versionValue.toString();
-                char* apiDefaultValueChar = strdup(qPrintable(apiDefaultValue));
-                char* apiActualValueChar = strdup(qPrintable(apiActualValue));
-
-                if (strcmp(apiActualValueChar, apiDefaultValueChar) == 0 ) {
-                    configUrl = "https://" + addressValue.toString() + "/api/getOpenVPNConfig";
-                } else {
-                    configUrl = "https://" + addressValue.toString() + "/api/getAllConfigArchive";
+                QStringList serviceList;
+                for (const QJsonValue &value : servicesArray) {
+                    serviceList.append(value.toString());
                 }
+                QString serviceListStr = serviceList.join(", ");
 
-                connect( downloadConfigButton, &QPushButton::clicked, this, [=](){ QDesktopServices::openUrl(QUrl(configUrl)); });
 
-                ui->tableWidgetDappsMasternodes->insertRow(0);
-                ui->tableWidgetDappsMasternodes->setItem(0, 0, addressItem);
-                ui->tableWidgetDappsMasternodes->setItem(0, 1, servicesItem);
-                ui->tableWidgetDappsMasternodes->setItem(0, 2, apiLatencyItem);
-                ui->tableWidgetDappsMasternodes->setItem(0, 3, statusItem);
-                ui->tableWidgetDappsMasternodes->setItem(0, 4, apiVersionItem);
-                ui->tableWidgetDappsMasternodes->setItem(0, 5, signKeyItem);                
-                ui->tableWidgetDappsMasternodes->setCellWidget(0, 6, downloadConfigButtonWidget);
+                if (apiLatencyValue.toInt()) {
+
+                    QTableWidgetItem *addressItem = new QTableWidgetItem(addressValue.toString());
+                    QTableWidgetItem *servicesItem = new QTableWidgetItem(serviceListStr);
+                    QTableWidgetItem *apiLatencyItem = new QTableWidgetItem();
+                    QTableWidgetItem *statusItem = new QTableWidgetItem(statusValue.toString());
+                    QTableWidgetItem *apiVersionItem = new QTableWidgetItem(versionValue.toString());
+                    QTableWidgetItem *signKeyItem = new QTableWidgetItem(signKeyValue.toString());
+
+                    apiLatencyItem->setData(Qt::UserRole, QVariant::fromValue(apiLatencyValue));
+
+                    QWidget *downloadConfigButtonWidget = new QWidget();
+                    QPushButton *downloadConfigButton = new QPushButton();
+                    downloadConfigButton->setProperty("cssClass", "download-config-button");
+                    downloadConfigButton->setText("Download Config");
+                    QHBoxLayout *downloadConfigButtonLayout = new QHBoxLayout(downloadConfigButtonWidget);
+                    downloadConfigButtonLayout->addWidget(downloadConfigButton);
+                    downloadConfigButtonLayout->setAlignment(Qt::AlignCenter);
+                    downloadConfigButtonLayout->setContentsMargins(0, 0, 0, 1);
+                    downloadConfigButtonWidget->setLayout(downloadConfigButtonLayout);
+
+                    QString configUrl;
+                    QString apiDefaultValue = "000100";
+                    QString apiActualValue = versionValue.toString();
+                    char *apiDefaultValueChar = strdup(qPrintable(apiDefaultValue));
+                    char *apiActualValueChar = strdup(qPrintable(apiActualValue));
+
+                    if (strcmp(apiActualValueChar, apiDefaultValueChar) == 0) {
+                        configUrl = "https://" + addressValue.toString() + "/api/getOpenVPNConfig";
+                    } else {
+                        configUrl = "https://" + addressValue.toString() + "/api/getAllConfigArchive";
+                    }
+
+                    connect(downloadConfigButton, &QPushButton::clicked, this, [=]() {
+                        QDesktopServices::openUrl(QUrl(configUrl));
+                    });
+
+                    ui->tableWidgetDappsMasternodes->insertRow(0);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 0, addressItem);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 1, servicesItem);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 2, apiLatencyItem);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 3, statusItem);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 4, apiVersionItem);
+                    ui->tableWidgetDappsMasternodes->setItem(0, 5, signKeyItem);
+                    ui->tableWidgetDappsMasternodes->setCellWidget(0, 6, downloadConfigButtonWidget);
+                }
             }
-        } 
 
-        ui->countLabelDapps->setText(QString::number(ui->tableWidgetDappsMasternodes->rowCount()));
-        ui->tableWidgetDappsMasternodes->setSortingEnabled(true);
+            ui->countLabelDapps->setText(QString::number(ui->tableWidgetDappsMasternodes->rowCount()));
+            ui->tableWidgetDappsMasternodes->setSortingEnabled(true);
 
-        delete reply;
-    }
+            delete reply;
+        }
+    });
 }
 // VELES END
 
