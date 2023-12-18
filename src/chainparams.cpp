@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2018 The Bitcoin Core developers
 // Copyright (c) 2014-2017 The Dash Core developers
 // Copyright (c) 2018 FXTC developers
-// Copyright (c) 2018 The Veles Core developers
+// Copyright (c) 2018-2023 The Veles Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -167,11 +167,6 @@ public:
         vSeeds.emplace_back("seed3.veles.network");
         vSeeds.emplace_back("seed4.veles.network");
         vSeeds.emplace_back("seed5.veles.network");
-        vSeeds.emplace_back("seed6.veles.network");
-        vSeeds.emplace_back("seed7.veles.network");
-        vSeeds.emplace_back("seed8.veles.network");
-        vSeeds.emplace_back("seed9.veles.network");
-        //vSeeds.emplace_back("seeds.on.another.domain"); // dns seeds template
 
         // VELES prefix 'V'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,70);
@@ -203,15 +198,17 @@ public:
 
         checkpointData = {
             {
-                {     0, uint256S("0xd7d274ccc1d4f6ff6e5533442ff7d734a25357de4a5a4e4c01c39823cba68831")},
-                {     5, uint256S("0x90fab65445cc71627e1b32783be765d645b54555e98a0d202021066886c9ad3c")},
-                {  5000, uint256S("0xa32f24cb12d3646690e9af6abffa02ac0f9ac0e57c8bf62f8546dcc7d6273684")},
-                { 10000, uint256S("0xab14a2cb0b305dcc26b2da9af35e0b0db5e19969746667d91a90983a972d1468")},
-                { 50000, uint256S("0xf335e1deda524c14026d473467753b365f572eecd0221ad72b6a29b53ebe163a")},
-                {100000, uint256S("0x000000000000005f9df7c4a29b7fc8ba96ca5f49a1122b7dce6fc0f311085bec")},
-                {167000, uint256S("0x22f677b269906cf135975d5f3b995f50614064d7f10782c590eb35193c80753c")},
-		{196000, uint256S("0x8ee72b4d92ea131e973f1f0cc5ce5e0170683a41a2a10e7c7d2003122d06ad66")}    
-
+                {      0, uint256S("0xd7d274ccc1d4f6ff6e5533442ff7d734a25357de4a5a4e4c01c39823cba68831")},
+                {      5, uint256S("0x90fab65445cc71627e1b32783be765d645b54555e98a0d202021066886c9ad3c")},
+                {   5000, uint256S("0xa32f24cb12d3646690e9af6abffa02ac0f9ac0e57c8bf62f8546dcc7d6273684")},
+                {  10000, uint256S("0xab14a2cb0b305dcc26b2da9af35e0b0db5e19969746667d91a90983a972d1468")},
+                {  50000, uint256S("0xf335e1deda524c14026d473467753b365f572eecd0221ad72b6a29b53ebe163a")},
+                { 100000, uint256S("0x000000000000005f9df7c4a29b7fc8ba96ca5f49a1122b7dce6fc0f311085bec")},
+                { 167000, uint256S("0x22f677b269906cf135975d5f3b995f50614064d7f10782c590eb35193c80753c")},
+                { 196000, uint256S("0x8ee72b4d92ea131e973f1f0cc5ce5e0170683a41a2a10e7c7d2003122d06ad66")},
+                {1000000, uint256S("0x26974a171591cc158361634cf0438a4ca2c8c3f78dbef0cd5e85f207fd45f8bf")},
+                {1110000, uint256S("0x5cbe500feec9af9010de2f9a5030d748ee1cdcabf1e271da9f6fd16ca2034017")}, 
+                {1118400, uint256S("0xd11cb5a2bd0deb613c91919c1c0568664a537f1af995e9cbe32e4de4ec54cac9")}        
             }
         };
         // FXTC BEGIN
