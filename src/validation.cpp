@@ -1568,8 +1568,11 @@ double GetSmoothPaymentFactor(int nHeight, int nStartHeight, int nEndHeight, dou
 {
     if (nHeight <= nStartHeight)
         return nStartFactor;
+    if (nHeight >= nEndHeight)
+        return nEndFactor;
 
-    return nStartFactor + (nEndFactor - nStartFactor) / ((nEndHeight - nStartHeight) / (nHeight - nStartHeight));
+    double fraction = (double)(nHeight - nStartHeight) / (nEndHeight - nStartHeight);
+    return nStartFactor + fraction * (nEndFactor - nStartFactor);
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
