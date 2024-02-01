@@ -371,18 +371,27 @@ void MasternodeList::updateDappsNodeList(bool fForce)
     }
 
     QEventLoop eventLoop;
-
-    // Set up the network request to fetch the list of DApps masternodes.
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     QNetworkRequest request(QUrl("https://explorer.veles.network/dapi/mn/list/assoc"));
+
+    // Set up SSL configuration to ignore SSL errors as our nodes has self-signed certificates
+    QSslConfiguration sslConfig = QSslConfiguration::defaultConfiguration();
+    sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+    request.setSslConfiguration(sslConfig);
 
     // Connect the finished signal of the network manager to the quit slot of the event loop.
     connect(manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
 
+    // Additionally, connect to the sslErrors signal to handle (ignore) SSL errors
+    connect(manager, &QNetworkAccessManager::sslErrors,
+            [](QNetworkReply *reply, const QList<QSslError> &errors) {
+                reply->ignoreSslErrors();
+            });
+
     ui->countLabelDapps->setText("Updating...");
 
     QNetworkReply *reply = manager->get(request);
-    eventLoop.exec();
+    eventLoop.exec(); // This will block until the 'finished' signal is emitted
 
     if (reply->error() == QNetworkReply::NoError) {
         // Disable sorting during the update to improve performance.
