@@ -230,7 +230,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     // FXTC BEGIN
     CAmount nFounderReward = GetFounderReward(nHeight, nFees + nBlockReward);
-    if (nFounderReward > 0) {
+    //if (nFounderReward > 0) {
         CTxDestination destination = DecodeDestination(Params().FounderAddress());
         if (IsValidDestination(destination)) {
             CScript FOUNDER_SCRIPT = GetScriptForDestination(destination);
@@ -239,7 +239,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         } else {
             LogPrintf("CreateNewBlock(): invalid founder reward destination\n");
         }
-    }
+    //}
     //
 
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
