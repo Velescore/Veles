@@ -363,99 +363,105 @@ void MasternodeList::updateNodeList()
 // VELES BEGIN
 void MasternodeList::updateDappsNodeList(bool fForce)
 {
+    // Attempt to acquire a lock to proceed with the update. If the lock is not acquired, exit the function.
     TRY_LOCK(cs_dappmnlist, fLockAcquired);
     if (!fLockAcquired) {
+        qDebug() << "Failed to acquire lock, exiting updateDappsNodeList";
         return;
     }
 
-    QNetworkAccessManager manager;
     QEventLoop eventLoop;
 
-    connect(&manager, &QNetworkAccessManager::finished, &eventLoop, [&]() {
-        ui->countLabelDapps->setText("Updating...");
+    // Set up the network request to fetch the list of DApps masternodes.
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkRequest request(QUrl("https://explorer.veles.network/dapi/mn/list/assoc"));
 
-        QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-        if (reply->error() == QNetworkReply::NoError) {
+    // Connect the finished signal of the network manager to the quit slot of the event loop.
+    connect(manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
 
-            ui->tableWidgetDappsMasternodes->setRowCount(0);
+    ui->countLabelDapps->setText("Updating...");
 
-            QString dappsMasternodeList = reply->readAll();
-            QJsonDocument document = QJsonDocument::fromJson(dappsMasternodeList.toUtf8());
-            QJsonObject root = document.object();
-            QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
+    QNetworkReply *reply = manager->get(request);
+    eventLoop.exec();
 
-            for (int i = 0; i < rootValue.count(); i++) {
+    if (reply->error() == QNetworkReply::NoError) {
+        // Disable sorting during the update to improve performance.
+        ui->tableWidgetDappsMasternodes->setSortingEnabled(false);
+        ui->tableWidgetDappsMasternodes->clearContents();
+        ui->tableWidgetDappsMasternodes->setRowCount(0);
 
-                QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
-                QJsonValue addressValue = subtree["ip"].toString();
-                QJsonValue apiLatencyValue = subtree["api_latency"];
-                QJsonValue statusValue = subtree["status"];
-                QJsonValue versionValue = subtree["api_version"];
-                QJsonValue signKeyValue = subtree["signing_key"];
+        // Process the received JSON data.
+        QString dappsMasternodeList = reply->readAll();
+        QJsonDocument document = QJsonDocument::fromJson(dappsMasternodeList.toUtf8());
+        QJsonObject root = document.object();
+        QJsonObject rootValue = root.value(root.keys().at(0)).toObject();
 
-                QJsonArray servicesArray = subtree["services_available"].toArray();
+        // Iterate through the masternode list and populate the table widget.
+        for (int i = 0; i < rootValue.count(); i++) {
+            QJsonObject subtree = rootValue.value(rootValue.keys().at(i)).toObject();
+            QString address = subtree["ip"].toString();
+            int apiLatency = subtree["api_latency"].toInt();
+            QString status = subtree["status"].toString();
+            QString version = subtree["api_version"].toString();
+            QString signingKey = subtree["signing_key"].toString();
+            QString servicesListStr;
+            QJsonArray servicesArray = subtree["services_available"].toArray();
 
-                QStringList serviceList;
-                for (const QJsonValue &value : servicesArray) {
-                    serviceList.append(value.toString());
-                }
-                QString serviceListStr = serviceList.join(", ");
-
-
-                if (apiLatencyValue.toInt()) {
-
-                    QTableWidgetItem *addressItem = new QTableWidgetItem(addressValue.toString());
-                    QTableWidgetItem *servicesItem = new QTableWidgetItem(serviceListStr);
-                    QTableWidgetItem *apiLatencyItem = new QTableWidgetItem();
-                    QTableWidgetItem *statusItem = new QTableWidgetItem(statusValue.toString());
-                    QTableWidgetItem *apiVersionItem = new QTableWidgetItem(versionValue.toString());
-                    QTableWidgetItem *signKeyItem = new QTableWidgetItem(signKeyValue.toString());
-
-                    apiLatencyItem->setData(Qt::UserRole, QVariant::fromValue(apiLatencyValue));
-
-                    QWidget *downloadConfigButtonWidget = new QWidget();
-                    QPushButton *downloadConfigButton = new QPushButton();
-                    downloadConfigButton->setProperty("cssClass", "download-config-button");
-                    downloadConfigButton->setText("Download Config");
-                    QHBoxLayout *downloadConfigButtonLayout = new QHBoxLayout(downloadConfigButtonWidget);
-                    downloadConfigButtonLayout->addWidget(downloadConfigButton);
-                    downloadConfigButtonLayout->setAlignment(Qt::AlignCenter);
-                    downloadConfigButtonLayout->setContentsMargins(0, 0, 0, 1);
-                    downloadConfigButtonWidget->setLayout(downloadConfigButtonLayout);
-
-                    QString configUrl;
-                    QString apiDefaultValue = "000100";
-                    QString apiActualValue = versionValue.toString();
-                    char *apiDefaultValueChar = strdup(qPrintable(apiDefaultValue));
-                    char *apiActualValueChar = strdup(qPrintable(apiActualValue));
-
-                    if (strcmp(apiActualValueChar, apiDefaultValueChar) == 0) {
-                        configUrl = "https://" + addressValue.toString() + "/api/getOpenVPNConfig";
-                    } else {
-                        configUrl = "https://" + addressValue.toString() + "/api/getAllConfigArchive";
-                    }
-
-                    connect(downloadConfigButton, &QPushButton::clicked, this, [=]() {
-                        QDesktopServices::openUrl(QUrl(configUrl));
-                    });
-
-                    ui->tableWidgetDappsMasternodes->insertRow(0);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 0, addressItem);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 1, servicesItem);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 2, apiLatencyItem);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 3, statusItem);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 4, apiVersionItem);
-                    ui->tableWidgetDappsMasternodes->setItem(0, 5, signKeyItem);
-                    ui->tableWidgetDappsMasternodes->setCellWidget(0, 6, downloadConfigButtonWidget);
+            for (int j = 0; j < servicesArray.size(); j++) {
+                servicesListStr += servicesArray[j].toString();
+                if (j < servicesArray.size() - 1) {
+                    servicesListStr += ", "; // Separate services with a comma.
                 }
             }
 
-            ui->countLabelDapps->setText(QString::number(ui->tableWidgetDappsMasternodes->rowCount()));
-            ui->tableWidgetDappsMasternodes->setSortingEnabled(true);
+            // Only add rows for nodes with a valid API latency.
+            if (apiLatency > 0) {
+                QTableWidgetItem *addressItem = new QTableWidgetItem(address);
+                QTableWidgetItem *servicesItem = new QTableWidgetItem(servicesListStr);
+                QTableWidgetItem *apiLatencyItem = new QTableWidgetItem(QString::number(apiLatency));
+                QTableWidgetItem *statusItem = new QTableWidgetItem(status);
+                QTableWidgetItem *apiVersionItem = new QTableWidgetItem(version);
+                QTableWidgetItem *signKeyItem = new QTableWidgetItem(signingKey);
 
-            delete reply;
+                QWidget *downloadConfigButtonWidget = new QWidget();
+                QPushButton *downloadConfigButton = new QPushButton("Download Config");
+                downloadConfigButton->setProperty("cssClass", "download-config-button");
+                QHBoxLayout *downloadConfigButtonLayout = new QHBoxLayout(downloadConfigButtonWidget);
+                downloadConfigButtonLayout->addWidget(downloadConfigButton);
+                downloadConfigButtonLayout->setAlignment(Qt::AlignCenter);
+                downloadConfigButtonLayout->setContentsMargins(0, 0, 0, 1);
+                downloadConfigButtonWidget->setLayout(downloadConfigButtonLayout);
+
+                QString configUrl = (version == "000100") ?
+                                    "https://" + address + "/api/getOpenVPNConfig" :
+                                    "https://" + address + "/api/getAllConfigArchive";
+
+                // Connect the download button's clicked signal to a lambda function that opens the URL.
+                connect(downloadConfigButton, &QPushButton::clicked, this, [configUrl](){
+                    QDesktopServices::openUrl(QUrl(configUrl));
+                });
+
+                int newRow = ui->tableWidgetDappsMasternodes->rowCount();
+                ui->tableWidgetDappsMasternodes->insertRow(newRow);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 0, addressItem);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 1, servicesItem);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 2, apiLatencyItem);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 3, statusItem);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 4, apiVersionItem);
+                ui->tableWidgetDappsMasternodes->setItem(newRow, 5, signKeyItem);
+                ui->tableWidgetDappsMasternodes->setCellWidget(newRow, 6, downloadConfigButtonWidget);
+            }
         }
-    });
+
+        ui->countLabelDapps->setText(QString::number(ui->tableWidgetDappsMasternodes->rowCount()));
+        ui->tableWidgetDappsMasternodes->setSortingEnabled(true);
+    } else {
+        // Log an error message if the network request failed.
+        qDebug() << "Network request error:" << reply->errorString();
+    }
+
+    // Clean up the network reply object.
+    reply->deleteLater();
 }
 // VELES END
 
