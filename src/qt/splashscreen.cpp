@@ -56,7 +56,7 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     //QString titleText       = tr(PACKAGE_NAME);
     //QString versionText     = QString("Version %1").arg(QString::fromStdString(FormatFullVersion()));
     // VELES BEGIN
-    QString copyrightText   = QString::fromUtf8(CopyrightHolders(strprintf("\xc2\xA9 %u-%u ", 2009, COPYRIGHT_YEAR)).c_str());
+    QString copyrightText   = QString::fromUtf8(CopyrightHolders("").c_str());
     QString titleAddText    = networkStyle->getTitleAddText();
     // VELES END
 

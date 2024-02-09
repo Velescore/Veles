@@ -289,7 +289,7 @@
           </widget>
           <widget class="QWidget" name="tabDappsMasternodes">
            <attribute name="title">
-            <string>Dapps Masternodes</string>
+            <string>dApp Masternodes</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="2">
@@ -321,7 +321,7 @@
                 <item>
                  <widget class="QLabel" name="updateDappsNote">
                   <property name="text">
-                   <string>Note: This feature is experimental and under development.</string>
+                   <string>List of the masternodes that support decentralized apps such as dVPN.&lt;br /&gt;Note: This is an experimental feature in this release.</string>
                   </property>
                  </widget>
                 </item>
@@ -428,7 +428,7 @@
                 </column>
                 <column>
                  <property name="text">
-                  <string>Get Config</string>
+                  <string>OpenVPN Configuration</string>
                  </property>
                 </column>
                </widget>
